@@ -25,14 +25,12 @@ fn main() -> anyhow::Result<()> {
     match args.string {
         None => {
             loop {
-                writer.write(YES)?;
+                writer.write_all(YES)?;
             }
         }
         Some(string) => {
             output = format!("{string}\n");
         }
     }
-    loop {
-        //writeln!(stdout, "{}", args.string)?;
-    }
+    anyhow::Ok(())
 }
