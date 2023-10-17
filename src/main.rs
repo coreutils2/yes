@@ -10,7 +10,7 @@ struct CliArgs {
 
 const VERSION_STRING: &'static str = env!("CARGO_PKG_VERSION");
 const BUFFER_SIZE: usize = 8192;
-const YES: &[u8; 2] = b"y\n";
+const YES: &'static str = "y\n";
 
 fn main() -> anyhow::Result<()> {
     let mut stdout = std::io::stdout();
@@ -19,20 +19,19 @@ fn main() -> anyhow::Result<()> {
         writeln!(stdout, "{VERSION_STRING}")?;
         return anyhow::Ok(());
     }
-    let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout);
+    let mut content = vec![];
     match args.string {
         None => {
-            loop {
-                writer.write(YES)?;
-                writer.flush()?;
-            }
+            content = Vec::from("y\n");
         }
-        Some(vector) => {
-            loop {
-                writer.write(vector.as_bytes())?;
-                writer.flush()?;
-            }
+        Some(string) => {
+            content = Vec::from(string);
         }
     }
-    // anyhow::Ok(())
+    let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout);
+    loop {
+        writer.write(&content)?;
+    }
+    writer.flush()?;
+    anyhow::Ok(())
 }
