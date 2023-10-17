@@ -28,10 +28,11 @@ fn main() -> anyhow::Result<()> {
             content = string;
         }
     }
-    let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout);
+    // let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout);
     loop {
-        writer.write(content.as_bytes())?;
+        // writer.write(content.as_bytes())?;
+        stdout.write(content.as_bytes())?;
     }
-    writer.flush()?;
+    // writer.flush()?;
     anyhow::Ok(())
 }
