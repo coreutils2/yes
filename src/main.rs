@@ -9,11 +9,11 @@ struct CliArgs {
 }
 
 const VERSION_STRING: &'static str = env!("CARGO_PKG_VERSION");
-const BUFFER_SIZE: usize = (4 * 1024 * 1024);
+const BUFFER_SIZE: usize = 4 * 1024 * 1024;
 const YES: &'static str = "y\n";
 
 fn main() -> anyhow::Result<()> {
-    let mut stdout = std::io::stdout();
+    let mut stdout = std::io::stdout().lock();
     let args = CliArgs::parse();
     if args.version {
         writeln!(stdout, "{VERSION_STRING}")?;
