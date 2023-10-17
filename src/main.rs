@@ -19,20 +19,19 @@ fn main() -> anyhow::Result<()> {
         writeln!(stdout, "{VERSION_STRING}")?;
         return anyhow::Ok(());
     }
+    let mut buffer = vec![0u8; BUFFER_SIZE];
     let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout);
     match args.string {
         None => {
             loop {
-                writer.write(b"y\n")?;
+                write!(buffer, "y\n")?;
             }
         }
         Some(string) => {
-            let temp = format!("{string}\n");
-            loop {
-                writer.write(temp.as_bytes())?;
-            }
+            write!(buffer, "{string}\n")?;
         }
     };
+    while writer.write_all(&buffer).is_ok() {}
     writer.flush()?;
     anyhow::Ok(())
 }
