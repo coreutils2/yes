@@ -10,7 +10,7 @@ struct CliArgs {
 
 const VERSION_STRING: &'static str = env!("CARGO_PKG_VERSION");
 const BUFFER_SIZE: usize = 8192;
-const YES: &str = "y\n";
+const YES: &[u8; 2] = b"y\n";
 
 fn main() -> anyhow::Result<()> {
     let mut stdout = std::io::stdout();
@@ -23,12 +23,12 @@ fn main() -> anyhow::Result<()> {
     match args.string {
         None => {
             loop {
-                write!(writer, "{YES}")?;
+                writer.write(YES)?;
             }
         }
         Some(vector) => {
             loop {
-                write!(writer, "{}", vector)?;
+                writer.write(vector.as_bytes())?;
             }
         }
     }
