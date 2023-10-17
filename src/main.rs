@@ -33,6 +33,7 @@ fn main() -> anyhow::Result<()> {
     for char in content.chars() {
         vector.push(char as u8);
     }
+
     loop {
         writer.write(&vector)?;
     }

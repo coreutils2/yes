@@ -11,3 +11,8 @@ anyhow = { version = "1.0.75" }
 
 [profile.dev.package."*"]
 opt-level = 3
+
+[profile.release]
+opt-level = 3
+strip = true
+lto = true
