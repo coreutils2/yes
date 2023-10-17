@@ -10,7 +10,6 @@ struct CliArgs {
 
 const VERSION_STRING: &'static str = env!("CARGO_PKG_VERSION");
 const BUFFER_SIZE: usize = 4 * 1024 * 1024;
-const YES: &'static str = "y\n";
 
 fn main() -> anyhow::Result<()> {
     let mut stdout = std::io::stdout().lock();
@@ -23,9 +22,7 @@ fn main() -> anyhow::Result<()> {
     let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout);
     match args.string {
         None => {
-            loop {
-                write!(buffer, "y\n")?;
-            }
+            write!(buffer, "y\n")?;
         }
         Some(string) => {
             write!(buffer, "{string}\n")?;
