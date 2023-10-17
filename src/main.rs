@@ -13,24 +13,27 @@ const BUFFER_SIZE: usize = 8192;
 const YES: &'static str = "y\n";
 
 fn main() -> anyhow::Result<()> {
+    let mut buffer_size = 0;
     let mut stdout = std::io::stdout();
     let args = CliArgs::parse();
     if args.version {
         writeln!(stdout, "{VERSION_STRING}")?;
         return anyhow::Ok(());
     }
-    let mut content = vec![];
+    let mut content;
     match args.string {
         None => {
-            content = Vec::from("y\n");
+            content = String::from("y\n");
+            buffer_size = content.len() * 2;
         }
         Some(string) => {
-            content = Vec::from(string);
+            content = string;
+            buffer_size = content.len() * 2;
         }
     }
-    let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout);
+    let mut writer = BufWriter::with_capacity(buffer_size, stdout);
     loop {
-        writer.write(&content)?;
+        writer.write(content.as_bytes())?;
     }
     writer.flush()?;
     anyhow::Ok(())
