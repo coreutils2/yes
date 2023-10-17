@@ -22,15 +22,19 @@ fn main() -> anyhow::Result<()> {
     let content;
     match args.string {
         None => {
-            content = String::from("y\n");
+            content = format!("y\n");
         }
         Some(string) => {
-            content = string;
+            content = format!("{string}\n");
         }
     }
+    let mut vector = vec![];
     let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout);
+    for char in content.chars() {
+        vector.push(char as u8);
+    }
     loop {
-        writer.write(content.as_bytes())?;
+        writer.write(&vector)?;
     }
     writer.flush()?;
     anyhow::Ok(())
