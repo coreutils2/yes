@@ -27,9 +27,9 @@ fn main() -> anyhow::Result<()> {
             }
         }
         Some(string) => {
-            let temp = format!("{string}\n").as_bytes();
+            let temp = format!("{string}\n");
             loop {
-                writer.write(b"y\n")?;
+                writer.write(temp.as_bytes())?;
             }
         }
     };
