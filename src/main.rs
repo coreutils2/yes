@@ -24,11 +24,13 @@ fn main() -> anyhow::Result<()> {
         None => {
             loop {
                 writer.write(YES)?;
+                writer.flush()?;
             }
         }
         Some(vector) => {
             loop {
                 writer.write(vector.as_bytes())?;
+                writer.flush()?;
             }
         }
     }
