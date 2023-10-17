@@ -9,7 +9,7 @@ struct CliArgs {
 }
 
 const VERSION_STRING: &'static str = env!("CARGO_PKG_VERSION");
-const BUFFER_SIZE: usize = 8192;
+const BUFFER_SIZE: usize = 8192 * 2;
 const YES: &'static str = "y\n";
 
 fn main() -> anyhow::Result<()> {
