@@ -3,15 +3,13 @@ use clap::Parser;
 
 #[derive(Debug, Parser)]
 struct CliArgs {
-    pub string: Option<String>,
+    pub string: Option<Vec<u8>>,
     #[clap(short = 'V', long)]
     pub version: bool,
 }
 
 const VERSION_STRING: &'static str = env!("CARGO_PKG_VERSION");
 const BUFFER_SIZE: usize = 8192;
-
-const YES: &str = "y";
 
 fn main() -> anyhow::Result<()> {
     let mut stdout = std::io::stdout();
@@ -21,16 +19,18 @@ fn main() -> anyhow::Result<()> {
         return anyhow::Ok(());
     }
     // let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout);
-    let output;
     match args.string {
         None => {
+            const YES: &str = "y\n";
             loop {
-                writeln!(stdout, "{}", YES)?;
+                stdout.write(YES.as_ref())?;
             }
         }
-        Some(string) => {
-            output = format!("{string}\n");
+        Some(vector) => {
+            loop {
+                stdout.write(&vector)?;
+            }
         }
     }
-    anyhow::Ok(())
+    // anyhow::Ok(())
 }
