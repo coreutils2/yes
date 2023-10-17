@@ -1,4 +1,4 @@
-use std::io::{BufWriter, Write};
+use std::io::{Write};
 use clap::Parser;
 
 #[derive(Debug, Parser)]
