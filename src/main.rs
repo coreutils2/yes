@@ -1,4 +1,4 @@
-use std::io::{Write};
+use std::io::{BufWriter, Write};
 use clap::Parser;
 
 #[derive(Debug, Parser)]
@@ -9,7 +9,7 @@ struct CliArgs {
 }
 
 const VERSION_STRING: &'static str = env!("CARGO_PKG_VERSION");
-// const BUFFER_SIZE: usize = 8192;
+const BUFFER_SIZE: usize = 8192;
 const YES: &str = "y\n";
 
 fn main() -> anyhow::Result<()> {
@@ -19,16 +19,16 @@ fn main() -> anyhow::Result<()> {
         writeln!(stdout, "{VERSION_STRING}")?;
         return anyhow::Ok(());
     }
-    // let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout);
+    let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout);
     match args.string {
         None => {
             loop {
-                write!(stdout, "{YES}")?;
+                write!(writer, "{YES}")?;
             }
         }
         Some(vector) => {
             loop {
-                write!(stdout, "{}", vector)?;
+                write!(writer, "{}", vector)?;
             }
         }
     }
