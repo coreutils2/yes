@@ -1,4 +1,4 @@
-use std::io::{BufWriter, StdoutLock, Write};
+use std::io::{BufWriter, Write};
 use clap::{CommandFactory, Parser};
 
 
@@ -32,26 +32,21 @@ fn main() -> anyhow::Result<()> {
         writeln!(stdout, "{VERSION_STRING}")?;
         return anyhow::Ok(());
     }
-    let mut res: Vec<u8>;
+    let mut res = vec![0u8; BUFFER_SIZE];
     let mut writer = BufWriter::new(stdout);
     match args.string {
         None => {
-            res = vec![0u8; BUFFER_SIZE];
             res.write_all(b"y\n")?;
         }
         Some(string) => {
-            if string.len() <= BUFFER_SIZE { res = vec![0u8; BUFFER_SIZE]; } else { res = vec![0u8; string.len().next_power_of_two()]; }
-            write!(res, "{string}\n")?;
+            // if the string supplied is larger than BUFFER_SIZE allocate extra space + the newline
+            if res.len() < string.len() { res.reserve(BUFFER_SIZE - string.len() + 1); }
+            let chars = string.as_bytes();
+            res.write_all(&chars)?;
+            res.write_all(&[10])?;
         }
     };
-    write_to_stdout(writer, &res)?;
-    anyhow::Ok(())
-}
-
-#[inline]
-fn write_to_stdout(mut writer: BufWriter<StdoutLock>, output: &Vec<u8>) -> anyhow::Result<()> {
-    while writer.write_all(&output).is_ok() {
-        writer.flush()?;
+    loop {
+        writer.write_all(&res)?;
     }
-    anyhow::Ok(())
 }
