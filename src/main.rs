@@ -32,30 +32,24 @@ fn main() -> anyhow::Result<()> {
         writeln!(stdout, "{VERSION_STRING}")?;
         return anyhow::Ok(());
     }
-    let size;
+    let mut res: Vec<u8>;
     let mut writer = BufWriter::new(stdout);
-    let content = match args.string {
+    match args.string {
         None => {
-            format!("y\n")
-            // write!(buffer, "y\n")?;
-            // buffer.flush()?;
+            res = vec![0u8; BUFFER_SIZE];
+            write!(res, "y\n")?;
         }
         Some(string) => {
-            format!("{string}\n")
-            // write!(buffer, "{string}\n")?;
-            // buffer.flush()?;
+            if string.len() <= BUFFER_SIZE { res = vec![0u8; BUFFER_SIZE]; } else { res = vec![0u8; string.len().next_power_of_two()]; }
+            write!(res, "{string}\n")?;
         }
     };
-    if content.len() < BUFFER_SIZE {
-        size = BUFFER_SIZE;
-    } else {
-        size = content.len().next_power_of_two();
-    }
-    let mut buffer = vec![0u8; size];
-    buffer.flush()?;
-    write!(buffer, "{content}")?;
-    loop {
-        writer.write_all(&buffer)?;
+    while writer.write_all(&res).is_ok() {
         writer.flush()?;
-    }
+    };
+    anyhow::Ok(())
+    // loop {
+    //     writer.write_all(&res)?;
+    //     writer.flush()?;
+    // }
 }
