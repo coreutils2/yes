@@ -1,4 +1,4 @@
-use std::io::{BufWriter, Write};
+use std::io::{BufWriter, StdoutLock, Write};
 use clap::{CommandFactory, Parser};
 
 
@@ -37,19 +37,21 @@ fn main() -> anyhow::Result<()> {
     match args.string {
         None => {
             res = vec![0u8; BUFFER_SIZE];
-            write!(res, "y\n")?;
+            res.write_all(b"y\n")?;
         }
         Some(string) => {
             if string.len() <= BUFFER_SIZE { res = vec![0u8; BUFFER_SIZE]; } else { res = vec![0u8; string.len().next_power_of_two()]; }
             write!(res, "{string}\n")?;
         }
     };
-    while writer.write_all(&res).is_ok() {
-        writer.flush()?;
-    };
+    write_to_stdout(writer, &res)?;
     anyhow::Ok(())
-    // loop {
-    //     writer.write_all(&res)?;
-    //     writer.flush()?;
-    // }
+}
+
+#[inline]
+fn write_to_stdout(mut writer: BufWriter<StdoutLock>, output: &Vec<u8>) -> anyhow::Result<()> {
+    while writer.write_all(&output).is_ok() {
+        writer.flush()?;
+    }
+    anyhow::Ok(())
 }
