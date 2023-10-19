@@ -1,4 +1,4 @@
-use std::io::{BufWriter, Write};
+use std::io::{Write};
 use clap::{Command, arg};
 
 const NAME: &'static str = env!("CARGO_PKG_NAME");
@@ -28,10 +28,10 @@ fn main() -> anyhow::Result<()> {
             vector.write_all(&[10])?; // newline char
         }
     };
-    let stdout = std::io::stdout().lock();
-    let mut writer = BufWriter::new(stdout);
+    let mut stdout = std::io::stdout().lock();
+    // let mut writer = BufWriter::new(stdout);
     loop {
-        writer.write_all(&vector)?;
-        writer.flush()?;
+        stdout.write_all(&vector)?;
+        stdout.flush()?;
     }
 }
